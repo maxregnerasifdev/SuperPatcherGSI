@@ -13,7 +13,7 @@ jobs:
       - name: Checkout main repository
         uses: actions/checkout@v2
         with:
-          repository: https://github.com/maxregnerasifdev/SuperPatcherGSI  # Replace with your main repository URL
+          repository: maxregnerasifdev/SuperPatcherGSI  # Replace with your main repository URL
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clone upstream repository
