@@ -13,24 +13,25 @@ jobs:
       - name: Checkout main repository
         uses: actions/checkout@v2
         with:
-          repository: maxregnerasifdev/SuperPatcherGSI  # Replace with your main repository URL
+          repository: <main_repo_owner>/<main_repo_name>
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clone upstream repository
-        run: git clone https://github.com/maxregnerasifdev/super-patch upstream-repo
-        # Replace with your upstream repository URL
+        run: git clone maxregnerasifdev/SuperPatcherGSI upstream-repo
 
       - name: Make changes to code
         run: |
           cd upstream-repo
-          # Make changes to the code here
+          # Modify files or make changes here
+          echo "Modified file content" >> example.txt
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Update code"
-        
+          git add .
+          git commit -m "Update code"
+
       - name: Push changes to upstream
         run: |
           cd upstream-repo
-          git push https://github.com/<upstream_repo_owner>/<upstream_repo_name>.git HEAD:main
+          git push https://github.com/maxregnerasifdev/super-patch/tree/main/.github HEAD:main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
