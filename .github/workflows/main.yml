@@ -24,7 +24,9 @@ jobs:
 
       - name: Clone super-patch repository
         run: |
-          git clone --depth 1 --no-tags https://github.com/maxregnerasifdev/super-patch super-patch
+          mkdir super-patch
+          cd super-patch
+          git clone --depth 1 --no-tags https://github.com/maxregnerasifdev/super-patch .
         working-directory: $GITHUB_WORKSPACE
 
       - name: Set upstream branches
