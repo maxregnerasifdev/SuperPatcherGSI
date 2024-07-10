@@ -1,62 +1,36 @@
-name: Sync and Upload
+name: Sync Repo with Upstream
 
 on:
   push:
     branches:
-      - main  # Adjust branch name if needed
+      - main  # Trigger on push events to the main branch
 
 jobs:
-  sync_and_upload:
+  sync:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout source repository
+      - name: Checkout main repository
         uses: actions/checkout@v2
         with:
-          repository: maxregnerasifdev/SuperPatcherGSI
-          path: SuperPatcherGSI  # Directory to checkout into
-          ref: main  # Adjust branch name if needed
+          repository: <main_repo_owner>/<main_repo_name>  # Replace with your main repository URL
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Git credentials
+      - name: Clone upstream repository
+        run: git clone https://github.com/<upstream_repo_owner>/<upstream_repo_name>.git upstream-repo
+        # Replace with your upstream repository URL
+
+      - name: Make changes to code
         run: |
-          git config --global user.email "actions@github.com"
-          git config --global user.name "GitHub Actions"
-
-      - name: Clone super-patch repository
+          cd upstream-repo
+          # Make changes to the code here
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -am "Update code"
+        
+      - name: Push changes to upstream
         run: |
-          mkdir super-patch
-          cd super-patch
-          git clone --depth 1 --no-tags https://github.com/maxregnerasifdev/super-patch .
-        working-directory: $GITHUB_WORKSPACE
-
-      - name: Set upstream branches
-        run: |
-          cd $GITHUB_WORKSPACE/SuperPatcherGSI
-          git remote add super-patch $GITHUB_WORKSPACE/super-patch
-          git fetch super-patch
-
-          cd $GITHUB_WORKSPACE/super-patch
-          git remote add SuperPatcherGSI $GITHUB_WORKSPACE/SuperPatcherGSI
-          git fetch SuperPatcherGSI
-
-      - name: Upstream changes from SuperPatcherGSI to super-patch
-        run: |
-          cd $GITHUB_WORKSPACE/SuperPatcherGSI
-          git checkout -b sync-branch
-          git merge --allow-unrelated-histories -m "Upstream changes from SuperPatcherGSI" super-patch/main
-
-      - name: Upstream changes from super-patch to SuperPatcherGSI
-        run: |
-          cd $GITHUB_WORKSPACE/super-patch
-          git checkout -b sync-branch
-          git merge --allow-unrelated-histories -m "Upstream changes from super-patch" SuperPatcherGSI/main
-
-      - name: Archive result as zip
-        run: |
-          zip -r synced-repositories.zip SuperPatcherGSI super-patch
-
-      - name: Upload zip file
-        uses: actions/upload-artifact@v2
-        with:
-          name: synced-repositories
-          path: synced-repositories.zip
+          cd upstream-repo
+          git push https://github.com/<upstream_repo_owner>/<upstream_repo_name>.git HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
