@@ -13,11 +13,11 @@ jobs:
       - name: Checkout main repository
         uses: actions/checkout@v2
         with:
-          repository: <main_repo_owner>/<main_repo_name>
+          repository: maxregnerasifdev/SuperPatcherGSI
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clone upstream repository
-        run: git clone maxregnerasifdev/SuperPatcherGSI upstream-repo
+        run: git clone maxregnerasifdev/super-patch upstream-repo
 
       - name: Make changes to code
         run: |
