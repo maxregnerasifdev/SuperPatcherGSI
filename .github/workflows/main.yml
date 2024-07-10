@@ -17,30 +17,36 @@ jobs:
           path: SuperPatcherGSI  # Directory to checkout into
           ref: main  # Adjust branch name if needed
 
-      - name: Checkout target repository
-        uses: actions/checkout@v2
-        with:
-          repository: maxregnerasifdev/super-patch
-          path: super-patch  # Directory to checkout into
-          ref: main  # Adjust branch name if needed
-
       - name: Set up Git credentials
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
+      - name: Clone super-patch repository
+        run: |
+          git clone --depth 1 --no-tags https://github.com/maxregnerasifdev/super-patch super-patch
+        working-directory: $GITHUB_WORKSPACE
+
+      - name: Set upstream branches
+        run: |
+          cd $GITHUB_WORKSPACE/SuperPatcherGSI
+          git remote add super-patch $GITHUB_WORKSPACE/super-patch
+          git fetch super-patch
+
+          cd $GITHUB_WORKSPACE/super-patch
+          git remote add SuperPatcherGSI $GITHUB_WORKSPACE/SuperPatcherGSI
+          git fetch SuperPatcherGSI
+
       - name: Upstream changes from SuperPatcherGSI to super-patch
         run: |
-          cd SuperPatcherGSI
-          git remote add super-patch ../super-patch
-          git fetch super-patch
+          cd $GITHUB_WORKSPACE/SuperPatcherGSI
+          git checkout -b sync-branch
           git merge --allow-unrelated-histories -m "Upstream changes from SuperPatcherGSI" super-patch/main
 
       - name: Upstream changes from super-patch to SuperPatcherGSI
         run: |
-          cd ../super-patch
-          git remote add SuperPatcherGSI ../SuperPatcherGSI
-          git fetch SuperPatcherGSI
+          cd $GITHUB_WORKSPACE/super-patch
+          git checkout -b sync-branch
           git merge --allow-unrelated-histories -m "Upstream changes from super-patch" SuperPatcherGSI/main
 
       - name: Archive result as zip
