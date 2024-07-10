@@ -17,7 +17,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Clone upstream repository
-        run: git clone maxregnerasifdev/super-patch upstream-repo
+        run: git clone https://github.com/maxregnerasifdev/super-patch upstream-repo
 
       - name: Make changes to code
         run: |
