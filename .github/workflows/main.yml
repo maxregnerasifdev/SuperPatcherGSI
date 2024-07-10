@@ -24,14 +24,14 @@ jobs:
           cd upstream-repo
           # Modify files or make changes here
           echo "Modified file content" >> example.txt
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -m "Update code"
 
-      - name: Push changes to upstream
+      - name: Zip repository contents
         run: |
           cd upstream-repo
-          git push https://github.com/maxregnerasifdev/super-patch/tree/main/.github HEAD:main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          zip -r result.zip .
+        
+      - name: Upload zip file
+        uses: actions/upload-artifact@v2
+        with:
+          name: result
+          path: upstream-repo/result.zip
